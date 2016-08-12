@@ -1,2 +1,3 @@
-# CS-344
-OSU Operating Systems Assigments
+# CS-344 Spring Quarter
+Repo for OSU's Operating Systems Assignments
+

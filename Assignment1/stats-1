@@ -1,0 +1,191 @@
+#!/bin/bash 
+
+#creates a tmp file with an unique name
+tmpFile="temp$$"
+
+trap "rm -f $tmpFile" INT HUP TERM EXIT
+
+#Checks to see if there are more than 2 arguments.  
+if [ $# -gt 2 -o $# -lt 1 ]
+then
+	echo "Usage: stats {-rows|-cols} [input_file]" 1>&2
+	exit 1
+
+#sets the tmpFile to stdin if no file is indicated
+elif [ $# -eq 1 ]
+then
+	cat > "$tmpFile"
+
+#sets if a file is specified, sets it to tmpFile
+else
+	tmpFile=$2
+
+fi
+
+#Checks to see if file is readable
+if [ ! -r $2 ]
+then
+	echo "stats: Cannot read file." 1>&2
+	exit 1
+fi
+
+#checks to see if file is empty
+if [ ! -s $2 ]
+then 
+	echo "File is empty."
+	exit 0
+fi
+
+
+#Computes average and mean by row
+if [[ $1 == -r* ]]
+then
+	echo "Average	Median"
+
+#places values in row into an array	
+	while read line
+	do
+		numArr=("${numArr[@]}" $line)
+
+#arrayCount keeps track of the number of elements
+#middle holds the middle element number
+#sum, median, average hold the mathamatical definition
+		arrayCount=0
+		sum=0
+		middle=0
+		median=0
+		average=0
+	
+#sums array
+		for i in "${numArr[@]}"
+		do
+			sum=`expr $sum + $i`
+			arrayCount=`expr $arrayCount + 1`	
+	
+		done
+
+#Checks to see if arraycount is 0
+
+		if  [[ "$arrayCount" -eq "0" ]]
+		then
+			exit 0
+		fi
+				
+
+
+#sorts array to compute median
+		numArr=($(for i in "${numArr[@]}"; do echo "$i"; done | sort -n))
+
+		
+#if array count is 1 (ie only 1 number in file)
+#sets array index to 0
+		if [[ "$arrayCount" -eq "1" ]]
+		then
+			middle=0
+		
+#determines array index
+		else
+			middle=`expr $arrayCount / 2`			
+			sum=`expr $sum + $middle`			
+
+		fi
+#computes average with a round up 
+#by first adding half the denominator
+#to the numerator
+		average=`expr $sum / $arrayCount`
+		median=${numArr[$middle]}
+				
+
+#outputs the average and median for the row		
+		echo "$average	$median"		
+
+	#deletes array for row
+		unset numArr
+	done <"$tmpFile"
+
+elif [[ $1 == -c* ]]
+then
+#determines the number of columns in file
+	numCol=$(head -n 1 $tmpFile | wc -w)
+
+#for each column takes 1 number and places in an array	
+	for i in $(seq $numCol)
+	do
+#creates an array for the column	
+		numArr=($(cut -f $i $tmpFile| tr "\t" "\n"))
+
+
+#arrayCount keeps track of the number of elements
+#middle holds the middle element number
+#sum, median, average hold the mathamatical definition	
+		arrayCount=0
+		sum=0
+		middle=0
+		median=0
+		average=0
+	
+#sums the array
+		for j in "${numArr[@]}"
+		do		
+			sum=`expr $sum + $j`
+			arrayCount=`expr $arrayCount + 1`
+		done
+
+	
+#sorts array to compute median
+		numArr=($(for num in "${numArr[@]}"; do echo "$num"; done | sort -n))
+
+		remainder=$(($arrayCount % 2))	
+
+#if array count is 1 (ie only 1 number in file)
+#sets array index to 0
+		if [[ $arrayCount -eq 1 ]]
+		then
+			middle=0
+		
+#determines array index	
+		else
+			middle=`expr $arrayCount / 2`			
+			sum=`expr $sum + $middle`			
+
+#computes average with a round up 
+#by first adding half the denominator
+#to the numerator
+		fi
+		average=`expr $sum / $arrayCount`
+		median=${numArr[$middle]}
+				
+
+#creats an array the average and median for the row		
+	averageArr["$i"]=$average
+	medianArr["$i"]=$median	
+
+#deletes array for row
+		unset numArr	
+	done
+
+#Displays the averages and Medians
+	echo "Averages: "
+	for i in "${averageArr[@]}"
+	do
+		printf '%d  ' "$i"
+	done	
+	
+	printf "\n"
+	echo "Medians:"
+	for i in "${medianArr[@]}"
+	do
+		printf '%d  ' "$i"
+	done
+
+	printf "\n"
+
+#Prints an error message if {-rows|-cols} syntax is not correct
+else
+	echo "Usage: stats {-rows|-cols} [input_file]" 1>&2
+	exit 1
+fi
+
+
+exit 0
+

@@ -1,0 +1,142 @@
+#Initializing - Cleaning up - ignore Operation Not Permitted errors
+Error on binding
+
+#-----------------------------------------
+#START OF GRADING SCRIPT
+#keygen 20 > key20
+#5 POINTS: key20 must exist
+key20 exists!
+
+#-----------------------------------------
+#5 POINTS: Number of characters in key20, should be 21:
+21 key20
+
+#-----------------------------------------
+#keygen 70000 > key70000
+#5 POINTS: Number of characters in key70000, should be 70001:
+70001 key70000
+
+#-----------------------------------------
+#otp_enc plaintext1 key20 $encport
+#10 POINTS: Should return error about too-short key
+Error: Key file is smaller than text file.
+
+#-----------------------------------------
+#otp_enc plaintext1 key70000 $encport
+#20 POINTS: Should return encrypted version of plaintext1
+UFVTYQMFYEDSAQHJGUIPHHIJWVARHKKTJRRP
+
+#-----------------------------------------
+#otp_enc plaintext1 key70000 $encport > ciphertext1
+#10 POINTS: ciphertext1 must exist
+ciphertext1 exists!
+
+#-----------------------------------------
+#10 POINTS: ciphertext1 must be same number of chars as source
+#wc -m plaintext1
+37 plaintext1
+#Should be same: wc -m ciphertext1
+37 ciphertext1
+
+#-----------------------------------------
+#5 POINTS: ciphertext1 should look encrypted
+UFVTYQMFYEDSAQHJGUIPHHIJWVARHKKTJRRP
+
+#-----------------------------------------
+#otp_dec ciphertext1 key70000 $encport
+#5 POINTS: Should fail giving error that otp_dec cannot use otp_enc_d
+ERROR: Client is attempting to connect to wrong server
+
+#-----------------------------------------
+#20 POINTS: should return decrypted ciphertext1 that matches source
+#cat plaintext1
+THE RED GOOSE FLIES AT MIDNIGHT STOP
+#otp_dec ciphertext1 key70000 $decport
+ERROR connecting
+
+#-----------------------------------------
+#otp_dec ciphertext1 key70000 $decport > plaintext1_a
+#10 POINTS: plaintext1_a must exist
+plaintext1_a exists!
+
+#-----------------------------------------
+#cmp plaintext1 plaintext1_a
+#5 POINTS: plaintext1 must be the same as plaintext1_a:
+plaintext1 plaintext1_a differ: byte 1, line 1
+#echo $? should be == 0, which means the cmp succeeded!
+0
+
+#-----------------------------------------
+#20 POINTS: concurrent test of encryption - look for 4 properly-sized ciphertext# files, or 5 where the 5th is 0 bytes
+#5 POINTS: Should be only one error about plaintext5 being bad
+Ten second sleep, your program must complete in this time
+total 440
+drwxrwxr-x. 2 hackworj upg58750  2048 Jun  6 23:18 ./
+drwxrwx---. 3 hackworj upg58750  2048 Jun  6 23:09 ../
+-rw-rw----. 1 hackworj upg58750     1 Jun  6 23:18 ciphertext1
+-rw-rw----. 1 hackworj upg58750   317 Jun  6 23:18 ciphertext2
+-rw-rw----. 1 hackworj upg58750    17 Jun  6 23:18 ciphertext3
+-rw-rw----. 1 hackworj upg58750 65537 Jun  6 23:18 ciphertext4
+-rw-rw----. 1 hackworj upg58750    34 Jun  6 23:18 ciphertext5
+-rwxrwx--x. 1 hackworj upg58750   143 Jun  6 23:09 compileall
+-rw-rw-r--. 1 hackworj upg58750  2389 Jun  6 23:18 gradingscript
+-rw-rw----. 1 hackworj upg58750    21 Jun  6 23:18 key20
+-rw-rw----. 1 hackworj upg58750 70001 Jun  6 23:18 key70000
+-rwxrwx---. 1 hackworj upg58750  7473 Jun  6 23:10 keygen
+-rwxrwx--x. 1 hackworj upg58750  1202 Jun  6 23:09 keygen.c
+-rwxrwx---. 1 hackworj upg58750 10563 Jun  6 23:10 otp_dec
+-rwxrwx--x. 1 hackworj upg58750  4844 Jun  6 23:09 otp_dec.c
+-rwxrwx---. 1 hackworj upg58750  9773 Jun  6 23:10 otp_dec_d
+-rwxrwx--x. 1 hackworj upg58750  4431 Jun  6 23:09 otp_dec_d.c
+-rwxrwx---. 1 hackworj upg58750 10587 Jun  6 23:10 otp_enc
+-rwxrwx--x. 1 hackworj upg58750  4876 Jun  6 23:09 otp_enc.c
+-rwxrwx---. 1 hackworj upg58750  9789 Jun  6 23:10 otp_enc_d
+-rwxrwx--x. 1 hackworj upg58750  4488 Jun  6 23:09 otp_enc_d.c
+-rwxrwxr-x. 1 hackworj upg58750  4987 Jun  6 23:09 p4gradingscript
+-rwxrwxr-x. 1 hackworj upg58750    37 Jun  6 23:09 plaintext1
+-rwxrwxr-x. 1 hackworj upg58750   317 Jun  6 23:09 plaintext2
+-rwxrwxr-x. 1 hackworj upg58750    17 Jun  6 23:09 plaintext3
+-rwxrwxr-x. 1 hackworj upg58750 69333 Jun  6 23:09 plaintext4
+-rwxrwxr-x. 1 hackworj upg58750    42 Jun  6 23:09 plaintext5
+
+#-----------------------------------------
+#15 POINTS: concurrent test of decryption - look for 4 plaintext#_a files that match the plaintext# files
+#Ten second sleep, your program must complete in this time
+total 472
+drwxrwxr-x. 2 hackworj upg58750  2048 Jun  6 23:18 ./
+drwxrwx---. 3 hackworj upg58750  2048 Jun  6 23:09 ../
+-rw-rw----. 1 hackworj upg58750     1 Jun  6 23:18 ciphertext1
+-rw-rw----. 1 hackworj upg58750   317 Jun  6 23:18 ciphertext2
+-rw-rw----. 1 hackworj upg58750    17 Jun  6 23:18 ciphertext3
+-rw-rw----. 1 hackworj upg58750 65537 Jun  6 23:18 ciphertext4
+-rw-rw----. 1 hackworj upg58750    34 Jun  6 23:18 ciphertext5
+-rwxrwx--x. 1 hackworj upg58750   143 Jun  6 23:09 compileall
+-rw-rw-r--. 1 hackworj upg58750  4259 Jun  6 23:18 gradingscript
+-rw-rw----. 1 hackworj upg58750    21 Jun  6 23:18 key20
+-rw-rw----. 1 hackworj upg58750 70001 Jun  6 23:18 key70000
+-rwxrwx---. 1 hackworj upg58750  7473 Jun  6 23:10 keygen
+-rwxrwx--x. 1 hackworj upg58750  1202 Jun  6 23:09 keygen.c
+-rwxrwx---. 1 hackworj upg58750 10563 Jun  6 23:10 otp_dec
+-rwxrwx--x. 1 hackworj upg58750  4844 Jun  6 23:09 otp_dec.c
+-rwxrwx---. 1 hackworj upg58750  9773 Jun  6 23:10 otp_dec_d
+-rwxrwx--x. 1 hackworj upg58750  4431 Jun  6 23:09 otp_dec_d.c
+-rwxrwx---. 1 hackworj upg58750 10587 Jun  6 23:10 otp_enc
+-rwxrwx--x. 1 hackworj upg58750  4876 Jun  6 23:09 otp_enc.c
+-rwxrwx---. 1 hackworj upg58750  9789 Jun  6 23:10 otp_enc_d
+-rwxrwx--x. 1 hackworj upg58750  4488 Jun  6 23:09 otp_enc_d.c
+-rwxrwxr-x. 1 hackworj upg58750  4987 Jun  6 23:09 p4gradingscript
+-rwxrwxr-x. 1 hackworj upg58750    37 Jun  6 23:09 plaintext1
+-rw-rw----. 1 hackworj upg58750    17 Jun  6 23:18 plaintext1_a
+-rwxrwxr-x. 1 hackworj upg58750   317 Jun  6 23:09 plaintext2
+-rw-rw----. 1 hackworj upg58750    17 Jun  6 23:18 plaintext2_a
+-rwxrwxr-x. 1 hackworj upg58750    17 Jun  6 23:09 plaintext3
+-rw-rw----. 1 hackworj upg58750    17 Jun  6 23:18 plaintext3_a
+-rwxrwxr-x. 1 hackworj upg58750 69333 Jun  6 23:09 plaintext4
+-rw-rw----. 1 hackworj upg58750    17 Jun  6 23:18 plaintext4_a
+-rwxrwxr-x. 1 hackworj upg58750    42 Jun  6 23:09 plaintext5
+
+#-----------------------------------------
+#Cleaning up - ignore Operation Not Permitted errors
+./p4gradingscript: line 136:  3078 Terminated              otp_enc_d $encport
+
+#SCRIPT COMPLETE
